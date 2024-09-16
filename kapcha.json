@@ -1,0 +1,356 @@
+	{
+	"info": {
+		"_postman_id": "172cd241-94d6-4513-8a37-a32d2634ad39",
+		"name": "kapcha",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38038489"
+	},
+	"item": [
+		{
+			"name": "ip",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							" ip: \"request-ip-address\"\r",
+							" "
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Stores the challenge_id in an environment or global variable\r",
+							"var responseBody = pm.response.json();\r",
+							"var ip = responseBody.ip;\r",
+							"pm.globals.set(\"ip\", ip);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://postman-echo.com/ip",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"ip"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get chalenge id",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Stores the challenge_id in an environment or global variable",
+							"var responseBody = pm.response.json();",
+							"var challengeId = responseBody.challenge_id;",
+							"pm.globals.set(\"challengeId\", challengeId);",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "secret",
+							"value": "{{secret}}",
+							"type": "text"
+						},
+						{
+							"key": "ip_address",
+							"value": "{{ip}}",
+							"type": "text"
+						},
+						{
+							"key": "user_agent",
+							"value": "{{user_agent}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host_site}}client/challenge/",
+					"host": [
+						"{{host_site}}client"
+					],
+					"path": [
+						"challenge",
+						""
+					],
+					"query": [
+						{
+							"key": "secret",
+							"value": "XZ1io272fSJKQ9W6s9Hd481k9HGHUk7X",
+							"disabled": true
+						},
+						{
+							"key": "ip_address",
+							"value": "192.168.38.1",
+							"disabled": true
+						},
+						{
+							"key": "user_agent",
+							"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+							"disabled": true
+						}
+					]
+				},
+				"description": "\nThis endpoint is used to send a POST request to initiate a CAPTCHA challenge for client verification. The request should be sent to https://hamyar.sharif.ir/KAPCHA/client/challenge/ with the following parameters in the x-www-form-urlencoded request body:\n\n- secret (text): The secret key for client verification.\n- ip_address (text): The IP address of the client.\n- user_agent (text): The user agent string of the client's browser.\n\nThe response will have a status code of 200 and a JSON content type. The response body will contain a boolean status indicating the success of the challenge initiation, and a challenge_id which can be used to identify the initiated challenge.\n"
+			},
+			"response": []
+		},
+		{
+			"name": "get kapcha img",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Stores the challenge_id in an environment or global variable",
+							"var responseBody = pm.response.json();",
+							"var solveKapcha = responseBody.text;",
+							"pm.globals.set(\"SolveKapcha\", solveKapcha);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"user-agent": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "challenge_id",
+							"value": "{{challengeId}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host_site}}client/captcha/",
+					"host": [
+						"{{host_site}}client"
+					],
+					"path": [
+						"captcha",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "solve kapcha",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Stores the challenge_id in an environment or global variable",
+							"var responseBody = pm.response.json();",
+							"var token = responseBody.token;",
+							"pm.globals.set(\"token\", token);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "challenge_id",
+							"value": "{{challengeId}}",
+							"type": "text"
+						},
+						{
+							"key": "kapcha",
+							"value": "{{SolveKapcha}}",
+							"type": "text"
+						},
+						{
+							"key": "user_agent",
+							"value": "{{user_agent}}",
+							"type": "text"
+						},
+						{
+							"key": "ip_address",
+							"value": "{{ip}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host_site}}client/solve/",
+					"host": [
+						"{{host_site}}client"
+					],
+					"path": [
+						"solve",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check token",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"console.log(pm.request.body)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "text"
+						},
+						{
+							"key": "secret",
+							"value": "{{secret}}",
+							"type": "text"
+						},
+						{
+							"key": "ip_address",
+							"value": "{{ip}}",
+							"type": "text"
+						},
+						{
+							"key": "user_agent",
+							"value": "{{user_agent}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host_site}}client/token/",
+					"host": [
+						"{{host_site}}client"
+					],
+					"path": [
+						"token",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "secret",
+			"value": "secret",
+			"type": "string"
+		},
+		{
+			"key": "user_agent",
+			"value": "user agent",
+			"type": "string"
+		},
+		{
+			"key": "host_site",
+			"value": "site address",
+			"type": "string"
+		}
+	]
+}
